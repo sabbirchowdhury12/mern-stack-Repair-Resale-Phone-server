@@ -22,7 +22,9 @@ app.get('/', (req, res) => {
 async function run() {
     try {
         const Products = client.db('resalePhone').collection('products');
-        const Services = client.db('touristService').collection('services');
+        const Users = client.db('resalePhone').collection('users');
+        const Orders = client.db('resalePhone').collection('orders');
+
 
         app.get('/categoryProducts/:id', async (req, res) => {
             const id = req.params.id;
@@ -30,17 +32,60 @@ async function run() {
                 category_id: id
             };
 
-            const result = await Products.find(query).toArray();
+            const result = await Products.find(query).limit(3).toArray();
             res.send(result);
         });
 
         //get all service data 
-        app.get('/allServices', async (req, res) => {
-            const cursor = Services.find({});
+        app.get('/allProducts', async (req, res) => {
+            const cursor = Products.find({});
             const result = await cursor.toArray();
             res.send(result);
         });
 
+        //save user
+        app.post('/users', async (req, res) => {
+            const user = req.body.user;
+            const result = await Users.insertOne(user);
+            res.send(result);
+        });
+
+        //save orders
+        app.post('/orders', async (req, res) => {
+            const order = req.body.order;
+            // console.log(req.body.order);
+            // console.log(order);
+            const result = await Orders.insertOne(order);
+            res.send(result);
+        });
+
+
+        //add a product
+        app.post('/product', async (req, res) => {
+            const product = req.body.product;
+            // console.log(req.body.product);
+            // console.log(product);
+            const result = await Products.insertOne(product);
+            res.send(result);
+        });
+
+
+        //cheack seller
+        app.get('/users/seller/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const user = await Users.findOne(query);
+            res.send({ isSeller: user?.role === 'seller' });
+        });
+
+
+        //get seller product
+        app.get('/product', async (req, res) => {
+            const email = req.query.email;
+            const query = { email };
+            const result = await Products.find(query).toArray();
+            res.send(result);
+        });
 
 
     }
