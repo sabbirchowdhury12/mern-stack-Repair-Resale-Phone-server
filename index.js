@@ -50,6 +50,31 @@ async function run() {
             res.send(result);
         });
 
+        //delete a user
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await Users.deleteOne(query);
+            res.send(result);
+        });
+
+        //get buyer user
+        app.get('/users/:role', async (req, res) => {
+            const userRole = req.params.role;
+
+            if (userRole === 'seller') {
+                const query = { role: userRole };
+                const users = await Users.find(query).toArray();
+                res.send(users);
+            }
+
+            else {
+                const query = { role: userRole };
+                const users = await Users.find(query).toArray();
+                res.send(users);
+            }
+        });
+
         //save orders
         app.post('/orders', async (req, res) => {
             const order = req.body.order;
