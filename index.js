@@ -59,6 +59,14 @@ async function run() {
             res.send(result);
         });
 
+        //get buyer order
+        app.get('/orders', async (req, res) => {
+            const email = req.query.email;
+            const query = { email };
+            const result = await Orders.find(query).toArray();
+            res.send(result);
+        });
+
 
         //add a product
         app.post('/product', async (req, res) => {
@@ -79,11 +87,37 @@ async function run() {
         });
 
 
+        //cheack buyer
+        app.get('/users/buyer/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const user = await Users.findOne(query);
+            res.send({ isBuyer: user?.role === 'buyer' });
+        });
+
+
+        //cheack admin
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const user = await Users.findOne(query);
+            res.send({ isAdmin: user?.role === 'admin' });
+        });
+
+
         //get seller product
         app.get('/product', async (req, res) => {
             const email = req.query.email;
             const query = { email };
             const result = await Products.find(query).toArray();
+            res.send(result);
+        });
+
+        //delete seller product
+        app.delete('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await Products.deleteOne(query);
             res.send(result);
         });
 
