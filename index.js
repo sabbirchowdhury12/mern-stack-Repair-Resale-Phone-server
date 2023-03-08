@@ -92,6 +92,22 @@ async function run() {
             res.send(result);
         });
 
+        //delete a order
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await Orders.deleteOne(query);
+            res.send(result);
+        });
+
+        //delete a order
+        app.get('/booking/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await Orders.findOne(query);
+            res.send(result);
+        });
+
 
         //add a product
         app.post('/product', async (req, res) => {
